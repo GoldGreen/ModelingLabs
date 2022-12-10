@@ -1,0 +1,110 @@
+﻿<UserControl
+    x:Class="Labs.Simplex.SimplexControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Labs.Simplex"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.DataContext>
+        <local:ViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
+            <Setter Property="Margin" Value="30,0" />
+        </Style>
+        <Style BasedOn="{StaticResource MaterialDesignDataGrid}" TargetType="DataGrid">
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="CanUserReorderColumns" Value="False" />
+            <Setter Property="CanUserResizeColumns" Value="False" />
+            <Setter Property="CanUserResizeRows" Value="False" />
+            <Setter Property="CanUserSortColumns" Value="False" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <WrapPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+            <TextBox md:HintAssist.Hint="Количество переменных" Text="{Binding VariablesCount, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox md:HintAssist.Hint="Количество условий" Text="{Binding ConditionsCount, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox
+                md:HintAssist.Hint="Экстремум функции"
+                ItemsSource="{Binding Extremums}"
+                SelectedItem="{Binding Extremum}"
+                Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+        </WrapPanel>
+        <DataGrid
+            Grid.Row="1"
+            Grid.Column="0"
+            ItemsSource="{Binding Variables}">
+            <DataGrid.Columns>
+                <md:DataGridTextColumn
+                    Binding="{Binding Name}"
+                    Header="Переменная"
+                    IsReadOnly="True" />
+                <md:DataGridTextColumn
+                    Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}"
+                    Header="Коэффициент" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <ItemsControl Name="root" ItemsSource="{Binding Conditions}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding ConditionVariables}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Width="35"
+                                            Margin="5,0"
+                                            VerticalAlignment="Center"
+                                            md:HintAssist.Hint="{Binding Name}"
+                                            Text="{Binding Value}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ComboBox
+                                Width="30"
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding DataContext.ConditionsValues, ElementName=root}"
+                                SelectedItem="{Binding Condition}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Converter={local:ConditionConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBox
+                                Width="35"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

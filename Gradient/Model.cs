@@ -16,7 +16,7 @@ public class Model
         context = new();
         context.Variables["x1"] = 0.0d;
         context.Variables["x2"] = 0.0d;
-        dynamicExpression = context.CompileDynamic(expression);
+        dynamicExpression = context.CompileDynamic(expression.ToLower());
         this.delta = delta;
     }
 

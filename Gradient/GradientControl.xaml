@@ -13,68 +13,72 @@
     <UserControl.DataContext>
         <local:ViewModel />
     </UserControl.DataContext>
-    <ScrollViewer>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0">
-                <WrapPanel>
-                    <WrapPanel.Resources>
-                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
-                            <Setter Property="Margin" Value="10,0" />
-                        </Style>
-                    </WrapPanel.Resources>
-                    <TextBox md:HintAssist.Hint="Дельта для расчета производной" Text="{Binding DerivativeDelta}" />
-                    <TextBox md:HintAssist.Hint="Минимальное приближение" Text="{Binding Epsilon}" />
-                    <TextBox md:HintAssist.Hint="Шаг обучения" Text="{Binding LearningRate}" />
-                    <TextBox md:HintAssist.Hint="Количество итераций" Text="{Binding IterationsCount}" />
-                    <TextBox md:HintAssist.Hint="Начальный X1" Text="{Binding StartX1}" />
-                    <TextBox md:HintAssist.Hint="Начальный X2" Text="{Binding StartX2}" />
-                </WrapPanel>
-                <WrapPanel>
-                    <WrapPanel.Resources>
-                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
-                            <Setter Property="Margin" Value="10,0" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="IsReadOnly" Value="True" />
-                        </Style>
-                    </WrapPanel.Resources>
-                    <ComboBox
-                        Width="NaN"
-                        MinWidth="300"
-                        Margin="10"
-                        md:HintAssist.Hint="Выражение"
-                        IsEditable="True"
-                        ItemsSource="{Binding Expressions}"
-                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                        Text="{Binding Expression}" />
-                    <Button Command="{Binding CalculateCommand}" Content="Расчитать" />
-                    <Button
-                        Margin="10,0"
-                        Command="{Binding ResetCommand}"
-                        Content="Вернуть настройки" />
-                    <TextBox md:HintAssist.Hint="Конечная итерация" Text="{Binding Result.Last.Iteration}" />
-                    <TextBox md:HintAssist.Hint="Найденный минимум" Text="{Binding Result.Last.Result, StringFormat='0.000'}" />
-                    <TextBox md:HintAssist.Hint="X1" Text="{Binding Result.Last.X1, StringFormat='0.000'}" />
-                    <TextBox md:HintAssist.Hint="X2" Text="{Binding Result.Last.X2, StringFormat='0.000'}" />
-                    <TextBox md:HintAssist.Hint="Ошибка X1" Text="{Binding Result.Last.X1Error, StringFormat='0.000'}" />
-                    <TextBox md:HintAssist.Hint="Ошибка X2" Text="{Binding Result.Last.X2Error, StringFormat='0.000'}" />
-                    <TextBox md:HintAssist.Hint="Время обучения" Text="{Binding Result.TrainTime, StringFormat=ss\\:fff}" />
-                </WrapPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="0">
+            <StackPanel>
+                <GroupBox Header="Стартовые параметры">
+                    <WrapPanel>
+                        <TextBox md:HintAssist.Hint="Дельта для расчета производной" Text="{Binding DerivativeDelta}" />
+                        <TextBox md:HintAssist.Hint="Минимальное приближение" Text="{Binding Epsilon}" />
+                        <TextBox md:HintAssist.Hint="Шаг обучения" Text="{Binding LearningRate}" />
+                        <TextBox md:HintAssist.Hint="Количество итераций" Text="{Binding IterationsCount}" />
+                        <TextBox md:HintAssist.Hint="Начальный X1" Text="{Binding StartX1}" />
+                        <TextBox md:HintAssist.Hint="Начальный X2" Text="{Binding StartX2}" />
+                    </WrapPanel>
+                </GroupBox>
+                <GroupBox Header="Функция и результаты">
+                    <WrapPanel>
+                        <WrapPanel.Resources>
+                            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
+                                <Setter Property="Margin" Value="10,0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="IsReadOnly" Value="True" />
+                            </Style>
+                        </WrapPanel.Resources>
+                        <ComboBox
+                            Width="NaN"
+                            MinWidth="300"
+                            Margin="10"
+                            md:HintAssist.Hint="Выражение"
+                            IsEditable="True"
+                            ItemsSource="{Binding Expressions}"
+                            Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                            Text="{Binding Expression}" />
+                        <Button Command="{Binding CalculateCommand}" Content="Расчитать" />
+                        <Button
+                            Margin="10,0"
+                            Command="{Binding ResetCommand}"
+                            Content="Вернуть настройки" />
+                        <TextBox md:HintAssist.Hint="Конечная итерация" Text="{Binding Result.Last.Iteration}" />
+                        <TextBox md:HintAssist.Hint="Найденный минимум" Text="{Binding Result.Last.Result, StringFormat='0.000'}" />
+                        <TextBox md:HintAssist.Hint="X1" Text="{Binding Result.Last.X1, StringFormat='0.000'}" />
+                        <TextBox md:HintAssist.Hint="X2" Text="{Binding Result.Last.X2, StringFormat='0.000'}" />
+                        <TextBox md:HintAssist.Hint="Ошибка X1" Text="{Binding Result.Last.X1Error, StringFormat='0.000'}" />
+                        <TextBox md:HintAssist.Hint="Ошибка X2" Text="{Binding Result.Last.X2Error, StringFormat='0.000'}" />
+                        <TextBox md:HintAssist.Hint="Время обучения" Text="{Binding Result.TrainTime, StringFormat=ss\\:fff}" />
+                    </WrapPanel>
+                </GroupBox>
             </StackPanel>
-            <UniformGrid Grid.Row="1" Columns="1">
-                <UniformGrid.Resources>
-                    <Style TargetType="oxy:PlotView">
-                        <Setter Property="Height" Value="300" />
-                    </Style>
-                </UniformGrid.Resources>
-                <oxy:PlotView Model="{Binding X1PlotModel}" />
-                <oxy:PlotView Model="{Binding X2PlotModel}" />
-                <oxy:PlotView Model="{Binding ResultPlotModel}" />
-                <oxy:PlotView Model="{Binding ErrorPlotModel}" />
-            </UniformGrid>
-        </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+        <GroupBox Grid.Column="1" Header="Графики">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding PlotModels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="1" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <oxy:PlotView Height="300" Model="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </GroupBox>
+    </Grid>
 </UserControl>

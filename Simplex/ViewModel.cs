@@ -2,29 +2,35 @@
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Labs.Simplex;
 
 public class ViewModel : ReactiveObject
 {
+    public Extremum[] Extremums { get; } = Enum.GetValues(typeof(Extremum))
+                                               .Cast<Extremum>()
+                                               .ToArray();
+
+    public Condition[] ConditionsValues { get; } = Enum.GetValues(typeof(Condition))
+                                                       .Cast<Condition>()
+                                                       .ToArray();
+
     [Reactive] public int VariablesCount { get; set; } = 3;
     [Reactive] public Extremum Extremum { get; set; } = Extremum.Max;
-    [Reactive]
-    public Extremum[] Extremums { get; set; } = Enum.GetValues(typeof(Extremum))
-                                                               .Cast<Extremum>()
-                                                               .ToArray();
 
-    [Reactive]
-    public Condition[] ConditionsValues { get; set; } = Enum.GetValues(typeof(Condition))
-                                                               .Cast<Condition>()
-                                                               .ToArray();
     [Reactive] public int ConditionsCount { get; set; } = 3;
 
     [Reactive] public VariableModel[] Variables { get; set; } = Array.Empty<VariableModel>();
     [Reactive] public ConditionModel[] Conditions { get; set; } = Array.Empty<ConditionModel>();
 
+    public ICommand CalculateCommand { get; }
+
     public ViewModel()
     {
+        CalculateCommand = ReactiveCommand.Create(Calculate);
+
         this.WhenAnyValue(x => x.VariablesCount)
             .Subscribe(count =>
             {
@@ -87,5 +93,18 @@ public class ViewModel : ReactiveObject
 
                 Conditions = newConditions;
             });
+    }
+
+    private void Calculate()
+    {
+        try
+        {
+            SimplexProvider3 provider = new();
+            provider.Calculate(Variables, Conditions, Extremum);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message);
+        }
     }
 }

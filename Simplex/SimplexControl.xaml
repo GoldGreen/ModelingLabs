@@ -12,99 +12,106 @@
     <UserControl.DataContext>
         <local:ViewModel />
     </UserControl.DataContext>
-    <UserControl.Resources>
-        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
-            <Setter Property="Margin" Value="30,0" />
-        </Style>
-        <Style BasedOn="{StaticResource MaterialDesignDataGrid}" TargetType="DataGrid">
-            <Setter Property="CanUserAddRows" Value="False" />
-            <Setter Property="CanUserDeleteRows" Value="False" />
-            <Setter Property="CanUserReorderColumns" Value="False" />
-            <Setter Property="CanUserResizeColumns" Value="False" />
-            <Setter Property="CanUserResizeRows" Value="False" />
-            <Setter Property="CanUserSortColumns" Value="False" />
-            <Setter Property="AutoGenerateColumns" Value="False" />
-        </Style>
-    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition />
+            <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <WrapPanel
+        <GroupBox
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="2">
-            <TextBox md:HintAssist.Hint="Количество переменных" Text="{Binding VariablesCount, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox md:HintAssist.Hint="Количество условий" Text="{Binding ConditionsCount, UpdateSourceTrigger=PropertyChanged}" />
-            <ComboBox
-                md:HintAssist.Hint="Экстремум функции"
-                ItemsSource="{Binding Extremums}"
-                SelectedItem="{Binding Extremum}"
-                Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
-        </WrapPanel>
-        <DataGrid
+            Header="Параметры задачи">
+            <WrapPanel>
+                <TextBox md:HintAssist.Hint="Количество переменных" Text="{Binding VariablesCount, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox md:HintAssist.Hint="Количество условий" Text="{Binding ConditionsCount, UpdateSourceTrigger=PropertyChanged}" />
+                <ComboBox
+                    md:HintAssist.Hint="Экстремум функции"
+                    ItemsSource="{Binding Extremums}"
+                    SelectedItem="{Binding Extremum}"
+                    Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                <Button
+                    Margin="10"
+                    VerticalAlignment="Center"
+                    Command="{Binding CalculateCommand}"
+                    Content="Расчитать" />
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox
             Grid.Row="1"
             Grid.Column="0"
-            ItemsSource="{Binding Variables}">
-            <DataGrid.Columns>
-                <md:DataGridTextColumn
-                    Binding="{Binding Name}"
-                    Header="Переменная"
-                    IsReadOnly="True" />
-                <md:DataGridTextColumn
-                    Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}"
-                    Header="Коэффициент" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <ItemsControl Name="root" ItemsSource="{Binding Conditions}">
+            Header="Переменные">
+
+            <ItemsControl ItemsSource="{Binding Variables}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding ConditionVariables}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBox
-                                            Width="35"
-                                            Margin="5,0"
-                                            VerticalAlignment="Center"
-                                            md:HintAssist.Hint="{Binding Name}"
-                                            Text="{Binding Value}" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <ComboBox
-                                Width="30"
-                                VerticalAlignment="Center"
-                                ItemsSource="{Binding DataContext.ConditionsValues, ElementName=root}"
-                                SelectedItem="{Binding Condition}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Converter={local:ConditionConverter}}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <TextBox
-                                Width="35"
-                                Margin="5,0"
-                                VerticalAlignment="Center"
-                                Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
+                        <TextBox
+                            MinWidth="70"
+                            md:HintAssist.Hint="{Binding Name}"
+                            Text="{Binding Value}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ScrollViewer>
+        </GroupBox>
+        <GroupBox
+            Grid.Row="2"
+            Grid.Column="0"
+            Header="Ограничения">
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                <ItemsControl Name="root" ItemsSource="{Binding Conditions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding ConditionVariables}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBox
+                                                Width="35"
+                                                Margin="5,0"
+                                                VerticalAlignment="Center"
+                                                md:HintAssist.Hint="{Binding Name}"
+                                                Text="{Binding Value}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <ComboBox
+                                    Width="40"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalContentAlignment="Center"
+                                    ItemsSource="{Binding DataContext.ConditionsValues, ElementName=root}"
+                                    SelectedItem="{Binding Condition}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Converter={local:ConditionConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBox
+                                    Width="35"
+                                    Margin="5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </GroupBox>
     </Grid>
 </UserControl>

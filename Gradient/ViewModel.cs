@@ -26,10 +26,7 @@ internal class ViewModel : ReactiveObject
     [Reactive] public double StartX2 { get; set; } = 0;
     [Reactive] public GradientResult Result { get; set; }
 
-    [Reactive] public PlotModel X1PlotModel { get; set; }
-    [Reactive] public PlotModel X2PlotModel { get; set; }
-    [Reactive] public PlotModel ErrorPlotModel { get; set; }
-    [Reactive] public PlotModel ResultPlotModel { get; set; }
+    [Reactive] public IEnumerable<PlotModel> PlotModels { get; set; }
 
     public IReadOnlyList<string> Expressions { get; set; } = new string[]
     {
@@ -84,10 +81,13 @@ internal class ViewModel : ReactiveObject
 
     private void CreatePlots(IEnumerable<History> history)
     {
-        X1PlotModel = CreatePlotModel($"{Expression} x1", "Значения x1", "Итерация", "X1", history, x => x.Iteration, x => x.X1);
-        X2PlotModel = CreatePlotModel($"{Expression} x2", "Значения x2", "Итерация", "X2", history, x => x.Iteration, x => x.X2);
-        ResultPlotModel = CreatePlotModel($"{Expression} Минимум", "Значения минимума", "Итерация", "Минимум", history, x => x.Iteration, x => x.Result);
-        ErrorPlotModel = CreatePlotModel($"{Expression} Общая ошибка", "Значения ошибки", "Итерация", "Ошибка", history, x => x.Iteration, x => x.X1Error + x.X2Error);
+        PlotModels = new[]
+        {
+            CreatePlotModel($"({Expression}) x1", "Значения x1", "Итерация", "X1", history, x => x.Iteration, x => x.X1),
+            CreatePlotModel($"({Expression}) x2", "Значения x2", "Итерация", "X2", history, x => x.Iteration, x => x.X2),
+            CreatePlotModel($"({Expression}) Минимум", "Значения минимума", "Итерация", "Минимум", history, x => x.Iteration, x => x.Result),
+            CreatePlotModel($"({Expression}) Общая ошибка", "Значения ошибки", "Итерация", "Ошибка", history, x => x.Iteration, x => x.X1Error + x.X2Error)
+        };
     }
 
     private PlotModel CreatePlotModel(string title,

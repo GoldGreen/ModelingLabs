@@ -1,7 +1,13 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using Labs.Simplex.Algotithm;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -21,6 +27,8 @@ public class ViewModel : ReactiveObject
     [Reactive] public Extremum Extremum { get; set; } = Extremum.Max;
 
     [Reactive] public int ConditionsCount { get; set; } = 3;
+    [Reactive] public ResultModel Result { get; set; }
+    [Reactive] public SeriesCollection SeriesCollection { get; set; }
 
     [Reactive] public VariableModel[] Variables { get; set; } = Array.Empty<VariableModel>();
     [Reactive] public ConditionModel[] Conditions { get; set; } = Array.Empty<ConditionModel>();
@@ -99,12 +107,32 @@ public class ViewModel : ReactiveObject
     {
         try
         {
-            SimplexProvider3 provider = new();
-            provider.Calculate(Variables, Conditions, Extremum);
+            SimplexProvider provider = new();
+            Result = provider.Calculate(Variables, Conditions, Extremum);
+            if (Result.Method.Variables == 2)
+            {
+                PlotCharts(Result.Method);
+            }
         }
         catch (Exception e)
         {
             MessageBox.Show(e.Message);
         }
+    }
+
+    private void PlotCharts(Method method)
+    {
+        var seriesCollection = new SeriesCollection();
+
+        seriesCollection.AddRange(method.Subjects.Select(x =>
+        {
+            var values = new ChartValues<ObservablePoint>();
+
+            values.Add(new ObservablePoint(0, x.Result / x.Variables[1]));
+            values.Add(new ObservablePoint(x.Result / x.Variables[0], 0));
+            return new LineSeries() { Values = values };
+        }));
+
+        SeriesCollection = seriesCollection;
     }
 }

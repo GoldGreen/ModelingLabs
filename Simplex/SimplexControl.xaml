@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Labs.Simplex"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     d:DesignHeight="450"
@@ -21,7 +22,8 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <GroupBox
             Grid.Row="0"
@@ -113,5 +115,43 @@
                 </ItemsControl>
             </ScrollViewer>
         </GroupBox>
+        <GroupBox
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Grid.Column="1"
+            Header="Результат">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBox
+                    Grid.Row="0"
+                    md:HintAssist.Hint="Результат"
+                    IsReadOnly="True"
+                    Text="{Binding Result.Log}" />
+                <ScrollViewer Grid.Row="1">
+                    <TextBox
+                        VerticalAlignment="Top"
+                        md:HintAssist.Hint="История"
+                        AcceptsReturn="True"
+                        IsReadOnly="True"
+                        Text="{Binding Result.Result}"
+                        TextWrapping="NoWrap" />
+                </ScrollViewer>
+            </Grid>
+        </GroupBox>
+        <Expander
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Grid.Column="2"
+            ExpandDirection="Left">
+            <GroupBox Header="График">
+                <lvc:CartesianChart
+                    Width="1000"
+                    LegendLocation="Top"
+                    Series="{Binding SeriesCollection}" />
+            </GroupBox>
+        </Expander>
     </Grid>
 </UserControl>
